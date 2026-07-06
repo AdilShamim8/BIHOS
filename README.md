@@ -1,1 +1,1 @@
-# BIHOS for AI hackathon only 
+# BIHOS is exclusively built for AI hackathons.
