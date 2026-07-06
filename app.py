@@ -11,7 +11,7 @@ import os, io, base64, traceback, json
 from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 
 # ── TensorFlow / Keras ────────────────────────────────────────────────────────
@@ -320,6 +320,12 @@ def img_to_b64(img: Image.Image, fmt: str = "PNG") -> str:
 # ═══════════════════════════════════════════════════════════════════════════════
 # ROUTES
 # ═══════════════════════════════════════════════════════════════════════════════
+
+@app.route("/", methods=["GET"])
+def index():
+    """Serve the frontend HTML."""
+    return send_file(BASE_DIR / "index.html")
+
 
 @app.route("/status", methods=["GET"])
 def status():
