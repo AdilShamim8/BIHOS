@@ -152,6 +152,20 @@ If you'd like to contribute, feel free to fork the repository and submit a pull 
 
 ---
 
+## 📜 Attributions & Acknowledgements
+
+In compliance with SciBlitz AI Challenge 2026 rules (Section 10.2), we attribute the following third-party resources used in this project:
+- **Models:** Built upon the [EfficientNetB2](https://arxiv.org/abs/1905.11946) architecture.
+- **Datasets:** *(Please fill in the names/links of the datasets used for training Eye, Hair, Nail, and Skin models, e.g., ISIC, ODIR, etc.)*
+- **Frameworks & Libraries:** 
+  - [TensorFlow / TFLite](https://www.tensorflow.org/) (Apache License 2.0)
+  - [Streamlit](https://streamlit.io/) (Apache License 2.0)
+  - [Pillow (PIL)](https://python-pillow.org/) (HPND License)
+  - [NumPy](https://numpy.org/) (BSD 3-Clause)
+- **Assets:** Icons provided by [Icons8](https://icons8.com).
+
+---
+
 ## 📜 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
