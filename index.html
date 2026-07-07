@@ -5718,7 +5718,7 @@ function runSimulatedAnalysis(id) {
 }
 
 /* ===================== CHEST X-RAY AI LOGIC ===================== */
-const XRAY_API = "http://localhost:5000";
+const XRAY_API = "";
 let xrayFile = null;
 let xrayAnnotatedB64 = null;
 
@@ -5870,7 +5870,7 @@ async function runXrayAnalysis(){
   formData.append("confidence_threshold", confThreshold);
 
   try{
-    const res = await fetch(XRAY_API + "/predict", {
+    const res = await fetch(XRAY_API + "/predict/xray", {
       method: "POST",
       body: formData,
       signal: AbortSignal.timeout(90000),
@@ -5990,7 +5990,7 @@ function downloadAnnotated(){
 
 /* ===================== EYE DISEASE AI — Full Production Logic ===================== */
 
-const EYE_API = "http://localhost:5000";
+const EYE_API = "";
 
 /* ── 4 Eye Disease Database ── */
 const EYE_DISEASES = [
@@ -6384,7 +6384,7 @@ function renderEyeResults(data){
 
 /* ===================== ORAL DISEASE AI — Full Production Logic ===================== */
 
-const ORAL_API = "http://localhost:5000";
+const ORAL_API = "";
 
 /* ── 6 Oral Disease Database ── */
 const ORAL_DISEASES = [
@@ -6793,7 +6793,7 @@ function renderOralResults(data){
 
 /* ===================== NAIL DISEASE AI — Full Production Logic ===================== */
 
-const NAIL_API = "http://localhost:5000";
+const NAIL_API = "";
 
 /* ── 6 Nail Disease Database ── */
 const NAIL_DISEASES = [
@@ -7204,7 +7204,7 @@ function renderNailResults(data){
 /* ===================== DENTAL DISEASE AI — Full Production Logic ===================== */
 
 /* ── API endpoint ── */
-const DENTAL_API = "http://localhost:5000";
+const DENTAL_API = "";
 
 /* ── 3 Dental Disease Database ── */
 const DENTAL_DISEASES = [
@@ -7626,7 +7626,7 @@ function renderDentalResults(data){
 /* ===================== SKIN DISEASE AI — Full Production Logic ===================== */
 
 /* ── API endpoint ── */
-const SKIN_API = "http://localhost:5000";
+const SKIN_API = "";
 
 /* ── 20 Skin Disease Database ── */
 const SKIN_DISEASES = [
@@ -8202,6 +8202,9 @@ applyLang();
 renderHomePreview();
 renderModulesGrid();
 renderDoctors();
+
+// Ping backend to load models into memory in background
+fetch("/preload").catch(e => console.log("Preload ping failed:", e));
 
 </script>
 </body>

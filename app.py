@@ -16,7 +16,10 @@ from flask_cors import CORS
 
 # ── TensorFlow / Keras ────────────────────────────────────────────────────────
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"       # suppress TF info/warning logs
-import tensorflow as tf
+try:
+    import tflite_runtime.interpreter as tflite
+except ImportError:
+    import tensorflow.lite as tflite
 
 # ── App init ──────────────────────────────────────────────────────────────────
 app = Flask(__name__)
@@ -156,16 +159,18 @@ models = {
 
 # ── Load skin model ───────────────────────────────────────────────────────────
 def load_skin_model():
-    skin_path = MODELS_DIR / "best_model.keras"
+    skin_path = MODELS_DIR / "best_model.tflite"
     if not skin_path.exists():
         models["skin"]["error"] = f"Model file not found: {skin_path}"
         print(f"[SKIN] ❌  {models['skin']['error']}")
         return
     try:
         print(f"[SKIN] Loading {skin_path} …")
-        models["skin"]["model"] = tf.keras.models.load_model(str(skin_path))
+        models["skin"]["model"] = tflite.Interpreter(model_path=str(skin_path))
+        models["skin"]["model"].allocate_tensors()
         models["skin"]["loaded"] = True
-        inp = models["skin"]["model"].input_shape
+        inp = models["skin"]["model"].get_input_details()[0]['shape']
+        models["skin"]["input_shape"] = tuple(inp)
         print(f"[SKIN] [OK] Loaded. Input shape: {inp}")
     except Exception as e:
         models["skin"]["error"] = str(e)
@@ -175,16 +180,18 @@ def load_skin_model():
 
 # ── Load dental model ──────────────────────────────────────────────────────────
 def load_dental_model():
-    dental_path = MODELS_DIR / "best_dental_model.keras"
+    dental_path = MODELS_DIR / "best_dental_model.tflite"
     if not dental_path.exists():
         models["dental"]["error"] = f"Model file not found: {dental_path}"
         print(f"[DENTAL] [FAIL]  {models['dental']['error']}")
         return
     try:
         print(f"[DENTAL] Loading {dental_path} …")
-        models["dental"]["model"] = tf.keras.models.load_model(str(dental_path))
+        models["dental"]["model"] = tflite.Interpreter(model_path=str(dental_path))
+        models["dental"]["model"].allocate_tensors()
         models["dental"]["loaded"] = True
-        inp = models["dental"]["model"].input_shape
+        inp = models["dental"]["model"].get_input_details()[0]['shape']
+        models["dental"]["input_shape"] = tuple(inp)
         print(f"[DENTAL] [OK] Loaded. Input shape: {inp}")
     except Exception as e:
         models["dental"]["error"] = str(e)
@@ -194,16 +201,18 @@ def load_dental_model():
 
 # ── Load nail model ────────────────────────────────────────────────────────────
 def load_nail_model():
-    nail_path = MODELS_DIR / "best_nail_model.keras"
+    nail_path = MODELS_DIR / "best_nail_model.tflite"
     if not nail_path.exists():
         models["nail"]["error"] = f"Model file not found: {nail_path}"
         print(f"[NAIL] [FAIL]  {models['nail']['error']}")
         return
     try:
         print(f"[NAIL] Loading {nail_path} …")
-        models["nail"]["model"] = tf.keras.models.load_model(str(nail_path))
+        models["nail"]["model"] = tflite.Interpreter(model_path=str(nail_path))
+        models["nail"]["model"].allocate_tensors()
         models["nail"]["loaded"] = True
-        inp = models["nail"]["model"].input_shape
+        inp = models["nail"]["model"].get_input_details()[0]['shape']
+        models["nail"]["input_shape"] = tuple(inp)
         print(f"[NAIL] [OK] Loaded. Input shape: {inp}")
     except Exception as e:
         models["nail"]["error"] = str(e)
@@ -213,16 +222,18 @@ def load_nail_model():
 
 # ── Load eye model ─────────────────────────────────────────────────────────────
 def load_eye_model():
-    eye_path = MODELS_DIR / "best_eye_model.keras"
+    eye_path = MODELS_DIR / "best_eye_model.tflite"
     if not eye_path.exists():
         models["eye"]["error"] = f"Model file not found: {eye_path}"
         print(f"[EYE] [FAIL]  {models['eye']['error']}")
         return
     try:
         print(f"[EYE] Loading {eye_path} …")
-        models["eye"]["model"] = tf.keras.models.load_model(str(eye_path))
+        models["eye"]["model"] = tflite.Interpreter(model_path=str(eye_path))
+        models["eye"]["model"].allocate_tensors()
         models["eye"]["loaded"] = True
-        inp = models["eye"]["model"].input_shape
+        inp = models["eye"]["model"].get_input_details()[0]['shape']
+        models["eye"]["input_shape"] = tuple(inp)
         print(f"[EYE] [OK] Loaded. Input shape: {inp}")
     except Exception as e:
         models["eye"]["error"] = str(e)
@@ -232,16 +243,18 @@ def load_eye_model():
 
 # ── Load oral model ────────────────────────────────────────────────────────────
 def load_oral_model():
-    oral_path = MODELS_DIR / "best_oral_model.keras"
+    oral_path = MODELS_DIR / "best_oral_model.tflite"
     if not oral_path.exists():
         models["oral"]["error"] = f"Model file not found: {oral_path}"
         print(f"[ORAL] [FAIL]  {models['oral']['error']}")
         return
     try:
         print(f"[ORAL] Loading {oral_path} …")
-        models["oral"]["model"] = tf.keras.models.load_model(str(oral_path))
+        models["oral"]["model"] = tflite.Interpreter(model_path=str(oral_path))
+        models["oral"]["model"].allocate_tensors()
         models["oral"]["loaded"] = True
-        inp = models["oral"]["model"].input_shape
+        inp = models["oral"]["model"].get_input_details()[0]['shape']
+        models["oral"]["input_shape"] = tuple(inp)
         print(f"[ORAL] [OK] Loaded. Input shape: {inp}")
     except Exception as e:
         models["oral"]["error"] = str(e)
@@ -254,7 +267,7 @@ def preprocess_skin(img: Image.Image) -> np.ndarray:
     """Convert PIL image → model input tensor."""
     m = models["skin"]["model"]
     # Auto-detect expected spatial size from model input_shape
-    inp_shape = m.input_shape                  # e.g. (None, 224, 224, 3)
+    inp_shape = models["skin"]["input_shape"]                  # e.g. (None, 224, 224, 3)
     h = inp_shape[1] if inp_shape[1] else 224
     w = inp_shape[2] if inp_shape[2] else 224
     img_rgb  = img.convert("RGB").resize((w, h), Image.LANCZOS)
@@ -266,7 +279,7 @@ def preprocess_skin(img: Image.Image) -> np.ndarray:
 def preprocess_dental(img: Image.Image) -> np.ndarray:
     """Convert PIL image → dental model input tensor."""
     m = models["dental"]["model"]
-    inp_shape = m.input_shape
+    inp_shape = models["dental"]["input_shape"]
     h = inp_shape[1] if inp_shape[1] else 224
     w = inp_shape[2] if inp_shape[2] else 224
     img_rgb  = img.convert("RGB").resize((w, h), Image.LANCZOS)
@@ -278,7 +291,7 @@ def preprocess_dental(img: Image.Image) -> np.ndarray:
 def preprocess_nail(img: Image.Image) -> np.ndarray:
     """Convert PIL image → nail model input tensor."""
     m = models["nail"]["model"]
-    inp_shape = m.input_shape
+    inp_shape = models["nail"]["input_shape"]
     h = inp_shape[1] if inp_shape[1] else 224
     w = inp_shape[2] if inp_shape[2] else 224
     img_rgb  = img.convert("RGB").resize((w, h), Image.LANCZOS)
@@ -290,7 +303,7 @@ def preprocess_nail(img: Image.Image) -> np.ndarray:
 def preprocess_eye(img: Image.Image) -> np.ndarray:
     """Convert PIL image → eye model input tensor."""
     m = models["eye"]["model"]
-    inp_shape = m.input_shape
+    inp_shape = models["eye"]["input_shape"]
     h = inp_shape[1] if inp_shape[1] else 224
     w = inp_shape[2] if inp_shape[2] else 224
     img_rgb  = img.convert("RGB").resize((w, h), Image.LANCZOS)
@@ -302,7 +315,7 @@ def preprocess_eye(img: Image.Image) -> np.ndarray:
 def preprocess_oral(img: Image.Image) -> np.ndarray:
     """Convert PIL image → oral model input tensor."""
     m = models["oral"]["model"]
-    inp_shape = m.input_shape
+    inp_shape = models["oral"]["input_shape"]
     h = inp_shape[1] if inp_shape[1] else 224
     w = inp_shape[2] if inp_shape[2] else 224
     img_rgb  = img.convert("RGB").resize((w, h), Image.LANCZOS)
@@ -337,11 +350,11 @@ def status():
     eye_m    = models["eye"]
     oral_m   = models["oral"]
 
-    skin_shape   = str(skin_m["model"].input_shape)   if skin_m["loaded"]   and skin_m["model"]   else None
-    dental_shape = str(dental_m["model"].input_shape) if dental_m["loaded"] and dental_m["model"] else None
-    nail_shape   = str(nail_m["model"].input_shape)   if nail_m["loaded"]   and nail_m["model"]   else None
-    eye_shape    = str(eye_m["model"].input_shape)    if eye_m["loaded"]    and eye_m["model"]    else None
-    oral_shape   = str(oral_m["model"].input_shape)   if oral_m["loaded"]   and oral_m["model"]   else None
+    skin_shape   = str(skin_m.get("input_shape")) if skin_m["loaded"] else None
+    dental_shape = str(dental_m.get("input_shape")) if dental_m["loaded"] else None
+    nail_shape   = str(nail_m.get("input_shape")) if nail_m["loaded"] else None
+    eye_shape    = str(eye_m.get("input_shape")) if eye_m["loaded"] else None
+    oral_shape   = str(oral_m.get("input_shape")) if oral_m["loaded"] else None
 
     return jsonify({
         "status":       "ok",
@@ -383,6 +396,25 @@ def status():
     })
 
 
+@app.route("/preload", methods=["GET"])
+def preload_models():
+    """Endpoint to preload all models in the background when the app is opened."""
+    import threading
+    def load_all():
+        if not models["skin"]["loaded"]: load_skin_model()
+        if not models["dental"]["loaded"]: load_dental_model()
+        if not models["nail"]["loaded"]: load_nail_model()
+        if not models["eye"]["loaded"]: load_eye_model()
+        if not models["oral"]["loaded"]: load_oral_model()
+        print("[PRELOAD] All models have been loaded in the background.")
+    
+    # Run in a background thread so it doesn't block the frontend response
+    threading.Thread(target=load_all, daemon=True).start()
+    
+    return jsonify({"status": "preloading started"})
+
+
+
 @app.route("/predict/skin", methods=["POST"])
 def predict_skin():
     """
@@ -400,6 +432,8 @@ def predict_skin():
         }
     """
     # ── 1. Validate model loaded ──
+    if not models["skin"]["loaded"]:
+        load_skin_model()
     if not models["skin"]["loaded"]:
         return jsonify({"error": "Skin model not loaded. " + (models["skin"]["error"] or "Unknown error")}), 503
 
@@ -423,7 +457,14 @@ def predict_skin():
     # ── 3. Inference ──
     try:
         inp   = preprocess_skin(img)
-        preds = models["skin"]["model"].predict(inp, verbose=0)[0]   # shape (20,)
+        interp = models["skin"]["model"]
+        in_idx = interp.get_input_details()[0]['index']
+        out_idx = interp.get_output_details()[0]['index']
+        if inp.dtype != interp.get_input_details()[0]['dtype']:
+            inp = inp.astype(interp.get_input_details()[0]['dtype'])
+        interp.set_tensor(in_idx, inp)
+        interp.invoke()
+        preds = interp.get_tensor(out_idx)[0]
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": f"Inference failed: {e}"}), 500
@@ -477,8 +518,7 @@ def predict_skin():
 
     annotated_b64 = img_to_b64(thumb, "PNG")
 
-    m = models["skin"]["model"]
-    inp_shape_str = str(m.input_shape)
+    inp_shape_str = str(models["skin"]["input_shape"])
 
     return jsonify({
         "predictions":      top_results,
@@ -486,7 +526,7 @@ def predict_skin():
         "top_confidence":   top_conf,
         "annotated_image":  annotated_b64,
         "model_info": {
-            "name":        "best_model.keras",
+            "name":        "best_model.tflite",
             "classes":     len(SKIN_CLASSES),
             "input_shape": inp_shape_str,
         },
@@ -530,6 +570,8 @@ def predict_dental():
     """
     # ── 1. Validate model loaded ──
     if not models["dental"]["loaded"]:
+        load_dental_model()
+    if not models["dental"]["loaded"]:
         return jsonify({"error": "Dental model not loaded. " + (models["dental"]["error"] or "Unknown error")}), 503
 
     # ── 2. Get image ──
@@ -552,7 +594,14 @@ def predict_dental():
     # ── 3. Inference ──
     try:
         inp   = preprocess_dental(img)
-        preds = models["dental"]["model"].predict(inp, verbose=0)[0]   # shape (3,)
+        interp = models["dental"]["model"]
+        in_idx = interp.get_input_details()[0]['index']
+        out_idx = interp.get_output_details()[0]['index']
+        if inp.dtype != interp.get_input_details()[0]['dtype']:
+            inp = inp.astype(interp.get_input_details()[0]['dtype'])
+        interp.set_tensor(in_idx, inp)
+        interp.invoke()
+        preds = interp.get_tensor(out_idx)[0]
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": f"Inference failed: {e}"}), 500
@@ -602,8 +651,7 @@ def predict_dental():
 
     annotated_b64 = img_to_b64(thumb, "PNG")
 
-    m = models["dental"]["model"]
-    inp_shape_str = str(m.input_shape)
+    inp_shape_str = str(models["skin"]["input_shape"])
 
     return jsonify({
         "predictions":      top_results,
@@ -611,7 +659,7 @@ def predict_dental():
         "top_confidence":   top_conf,
         "annotated_image":  annotated_b64,
         "model_info": {
-            "name":        "best_dental_model.keras",
+            "name":        "best_dental_model.tflite",
             "classes":     len(DENTAL_CLASSES),
             "input_shape": inp_shape_str,
         },
@@ -626,6 +674,8 @@ def predict_nail():
         top_k               — (int, default 3)
         confidence_threshold — (float, default 0.0)
     """
+    if not models["nail"]["loaded"]:
+        load_nail_model()
     if not models["nail"]["loaded"]:
         return jsonify({"error": "Nail model not loaded. " + (models["nail"]["error"] or "Unknown error")}), 503
 
@@ -647,7 +697,14 @@ def predict_nail():
 
     try:
         inp   = preprocess_nail(img)
-        preds = models["nail"]["model"].predict(inp, verbose=0)[0]
+        interp = models["nail"]["model"]
+        in_idx = interp.get_input_details()[0]['index']
+        out_idx = interp.get_output_details()[0]['index']
+        if inp.dtype != interp.get_input_details()[0]['dtype']:
+            inp = inp.astype(interp.get_input_details()[0]['dtype'])
+        interp.set_tensor(in_idx, inp)
+        interp.invoke()
+        preds = interp.get_tensor(out_idx)[0]
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": f"Inference failed: {e}"}), 500
@@ -694,7 +751,7 @@ def predict_nail():
     draw.text((12, 34), "BIHOS · Nail AI  (Research use only)", fill=(200, 200, 200), font=font_sub)
 
     annotated_b64 = img_to_b64(thumb, "PNG")
-    inp_shape_str = str(models["nail"]["model"].input_shape)
+    inp_shape_str = str(models["nail"]["input_shape"])
 
     return jsonify({
         "predictions":      top_results,
@@ -702,7 +759,7 @@ def predict_nail():
         "top_confidence":   top_conf,
         "annotated_image":  annotated_b64,
         "model_info": {
-            "name":        "best_nail_model.keras",
+            "name":        "best_nail_model.tflite",
             "classes":     len(NAIL_CLASSES),
             "input_shape": inp_shape_str,
         },
@@ -717,6 +774,8 @@ def predict_eye():
         top_k               — (int, default 3)
         confidence_threshold — (float, default 0.0)
     """
+    if not models["eye"]["loaded"]:
+        load_eye_model()
     if not models["eye"]["loaded"]:
         return jsonify({"error": "Eye model not loaded. " + (models["eye"]["error"] or "Unknown error")}), 503
 
@@ -738,7 +797,14 @@ def predict_eye():
 
     try:
         inp   = preprocess_eye(img)
-        preds = models["eye"]["model"].predict(inp, verbose=0)[0]
+        interp = models["eye"]["model"]
+        in_idx = interp.get_input_details()[0]['index']
+        out_idx = interp.get_output_details()[0]['index']
+        if inp.dtype != interp.get_input_details()[0]['dtype']:
+            inp = inp.astype(interp.get_input_details()[0]['dtype'])
+        interp.set_tensor(in_idx, inp)
+        interp.invoke()
+        preds = interp.get_tensor(out_idx)[0]
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": f"Inference failed: {e}"}), 500
@@ -785,7 +851,7 @@ def predict_eye():
     draw.text((12, 34), "BIHOS · Eye AI  (Research use only)", fill=(200, 200, 200), font=font_sub)
 
     annotated_b64 = img_to_b64(thumb, "PNG")
-    inp_shape_str = str(models["eye"]["model"].input_shape)
+    inp_shape_str = str(models["eye"]["input_shape"])
 
     return jsonify({
         "predictions":      top_results,
@@ -793,7 +859,7 @@ def predict_eye():
         "top_confidence":   top_conf,
         "annotated_image":  annotated_b64,
         "model_info": {
-            "name":        "best_eye_model.keras",
+            "name":        "best_eye_model.tflite",
             "classes":     len(EYE_CLASSES),
             "input_shape": inp_shape_str,
         },
@@ -808,6 +874,8 @@ def predict_oral():
         top_k               — (int, default 3)
         confidence_threshold — (float, default 0.0)
     """
+    if not models["oral"]["loaded"]:
+        load_oral_model()
     if not models["oral"]["loaded"]:
         return jsonify({"error": "Oral model not loaded. " + (models["oral"]["error"] or "Unknown error")}), 503
 
@@ -829,7 +897,14 @@ def predict_oral():
 
     try:
         inp   = preprocess_oral(img)
-        preds = models["oral"]["model"].predict(inp, verbose=0)[0]
+        interp = models["oral"]["model"]
+        in_idx = interp.get_input_details()[0]['index']
+        out_idx = interp.get_output_details()[0]['index']
+        if inp.dtype != interp.get_input_details()[0]['dtype']:
+            inp = inp.astype(interp.get_input_details()[0]['dtype'])
+        interp.set_tensor(in_idx, inp)
+        interp.invoke()
+        preds = interp.get_tensor(out_idx)[0]
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": f"Inference failed: {e}"}), 500
@@ -876,7 +951,7 @@ def predict_oral():
     draw.text((12, 34), "BIHOS · Oral AI  (Research use only)", fill=(200, 200, 200), font=font_sub)
 
     annotated_b64 = img_to_b64(thumb, "PNG")
-    inp_shape_str = str(models["oral"]["model"].input_shape)
+    inp_shape_str = str(models["oral"]["input_shape"])
 
     return jsonify({
         "predictions":      top_results,
@@ -884,7 +959,7 @@ def predict_oral():
         "top_confidence":   top_conf,
         "annotated_image":  annotated_b64,
         "model_info": {
-            "name":        "best_oral_model.keras",
+            "name":        "best_oral_model.tflite",
             "classes":     len(ORAL_CLASSES),
             "input_shape": inp_shape_str,
         },
@@ -895,20 +970,10 @@ def predict_oral():
 # MAIN
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# ── Load models at module import time (required for Gunicorn / Render) ─────────
+# ── Models are loaded dynamically (lazy loading) on the first request ──────────
 print("=" * 60)
-print("  BIHOS · AI Backend Server — Loading models …")
-print("=" * 60)
-load_skin_model()
-load_dental_model()
-load_nail_model()
-load_eye_model()
-load_oral_model()
-print(f"\n  Skin model loaded   : {models['skin']['loaded']}")
-print(f"  Dental model loaded : {models['dental']['loaded']}")
-print(f"  Nail model loaded   : {models['nail']['loaded']}")
-print(f"  Eye model loaded    : {models['eye']['loaded']}")
-print(f"  Oral model loaded   : {models['oral']['loaded']}")
+print("  BIHOS · AI Backend Server — Starting up …")
+print("  Models will load dynamically on first request to conserve RAM.")
 print("=" * 60 + "\n")
 
 if __name__ == "__main__":
