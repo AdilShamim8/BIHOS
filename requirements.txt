@@ -1,4 +1,15 @@
-streamlit>=1.35.0
-tensorflow-cpu==2.16.2
+# BIHOS — Production Dependencies
+# Render.com free tier deployment
+
+# ── Web Framework ────────────────────────────────────────────────────────────
+flask>=3.0.0
+flask-cors>=4.0.0
+gunicorn>=22.0.0
+
+# ── TFLite Runtime (lightweight — replaces deprecated tflite-runtime) ────────
+# ai-edge-litert is the official successor to tflite-runtime (works on Python 3.11+ Linux)
+ai-edge-litert>=1.0.1
+
+# ── Image Processing ─────────────────────────────────────────────────────────
 pillow>=10.0.0
 numpy>=1.24.0,<2.0.0
