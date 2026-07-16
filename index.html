@@ -20,8 +20,8 @@ tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans:['I
   --glass: rgba(255,255,255,0.04); --shadow: 0 20px 60px -20px rgba(0,0,0,.6);
 }
 html[data-theme="light"]{
-  --bg:#f6f9fc; --bg-2:#ffffff; --card:rgba(15,30,55,0.025); --card-border:rgba(15,30,55,0.08);
-  --text:#0f1c33; --text-muted:#5a6a82; --glass: rgba(15,30,55,0.03); --shadow: 0 20px 50px -20px rgba(15,30,55,.18);
+  --bg:#f2f6fb; --bg-2:#ffffff; --card:rgba(15,30,55,0.04); --card-border:rgba(15,30,55,0.1);
+  --text:#0f1c33; --text-muted:#4e5f78; --glass: rgba(255,255,255,0.7); --shadow: 0 20px 50px -20px rgba(15,30,55,.18);
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:'Inter','Hind Siliguri',sans-serif;transition:background .4s,color .4s;overflow-x:hidden}
@@ -30,10 +30,12 @@ body::before{content:'';position:fixed;inset:0;background:
   radial-gradient(ellipse 60% 50% at 100% 50%, rgba(99,102,241,.10), transparent),
   radial-gradient(ellipse 60% 50% at 0% 80%, rgba(6,182,212,.10), transparent);
   pointer-events:none;z-index:0;transition:opacity .4s}
-html[data-theme="light"] body::before{opacity:.5}
+html[data-theme="light"] body::before{opacity:.6}
 .glass{background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--card-border)}
 .card{background:var(--card);border:1px solid var(--card-border);backdrop-filter:blur(12px);transition:all .35s cubic-bezier(.2,.8,.2,1)}
-.card:hover{transform:translateY(-4px);border-color:rgba(16,185,129,.4);box-shadow:0 20px 40px -20px rgba(16,185,129,.25)}
+html[data-theme="light"] .card{background:rgba(255,255,255,0.75);border-color:rgba(15,30,55,0.1);box-shadow:0 2px 12px -4px rgba(15,30,55,.08)}
+.card:hover{transform:translateY(-5px);border-color:rgba(16,185,129,.4);box-shadow:0 24px 48px -20px rgba(16,185,129,.25)}
+html[data-theme="light"] .card:hover{box-shadow:0 24px 48px -20px rgba(16,185,129,.2),0 4px 12px -4px rgba(15,30,55,.08)}
 .text-muted{color:var(--text-muted)}
 .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .grad-bg{background:var(--grad)}
@@ -58,8 +60,8 @@ html[data-theme="light"] body::before{opacity:.5}
 .nav-link.active{color:var(--primary)}
 .nav-link::after{content:'';position:absolute;left:0;bottom:-6px;width:0;height:2px;background:var(--grad);transition:width .3s}
 .nav-link:hover::after,.nav-link.active::after{width:100%}
-.module-icon{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(99,102,241,.15));color:var(--primary);transition:all .3s}
-.card:hover .module-icon{transform:scale(1.08) rotate(-5deg);background:var(--grad);color:#fff}
+.module-icon{width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:16px;background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(99,102,241,.18));color:var(--primary);transition:all .35s cubic-bezier(.2,.8,.2,1);box-shadow:0 4px 16px -4px rgba(16,185,129,.2)}
+.card:hover .module-icon{transform:scale(1.1) rotate(-6deg);background:var(--grad);color:#fff;box-shadow:0 8px 24px -6px rgba(16,185,129,.45)}
 .section-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;border:1px solid var(--card-border);background:var(--card);font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--primary);font-weight:600}
 .input{width:100%;padding:14px 16px;background:var(--card);border:1px solid var(--card-border);border-radius:12px;color:var(--text);transition:all .25s;font-size:15px}
 .input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(16,185,129,.15)}
@@ -86,6 +88,165 @@ html[data-theme="light"] body::before{opacity:.5}
 .coming-soon::after{content:'COMING SOON';position:absolute;top:14px;right:-32px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:4px 36px;transform:rotate(45deg);letter-spacing:1px}
 .skeleton-shine{background:linear-gradient(90deg,var(--card) 25%,rgba(255,255,255,.06) 50%,var(--card) 75%);background-size:200% 100%;animation:shimmer 1.6s infinite}
 @media(max-width:768px){.hero-grid{background-size:32px 32px}}
+
+/* ═══════════ SECTION CARDS ═══════════ */
+.sections-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:28px;
+  align-items:stretch;
+}
+@media(max-width:1024px){.sections-grid{grid-template-columns:1fr}}
+@media(min-width:640px) and (max-width:1024px){.sections-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* Base section card — overrides .card for this context */
+.section-card-wrap{
+  display:flex;
+  flex-direction:column;
+  border-radius:28px;
+  padding:36px 32px 32px;
+  cursor:pointer;
+  border:1px solid var(--card-border);
+  backdrop-filter:blur(12px);
+  transition:all .4s cubic-bezier(.2,.8,.2,1);
+  position:relative;
+  overflow:hidden;
+}
+html[data-theme="light"] .section-card-wrap{
+  background:rgba(255,255,255,0.78);
+  border-color:rgba(15,30,55,.09);
+  box-shadow:0 2px 16px -4px rgba(15,30,55,.07);
+}
+html[data-theme="dark"] .section-card-wrap,
+:root .section-card-wrap{
+  background:var(--card);
+}
+.section-card-wrap .sc-body{flex:1}
+
+/* Sec 1 — Emerald */
+.sc-1{
+  background:linear-gradient(150deg,rgba(16,185,129,.07) 0%,rgba(16,185,129,.02) 100%);
+}
+html[data-theme="light"] .sc-1{background:linear-gradient(150deg,rgba(16,185,129,.06) 0%,rgba(255,255,255,.95) 100%)}
+.sc-1:hover{border-color:rgba(16,185,129,.45);box-shadow:0 28px 56px -20px rgba(16,185,129,.3);transform:translateY(-6px)}
+.sc-1 .sc-icon{background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(16,185,129,.08));color:#10b981;box-shadow:0 4px 16px -4px rgba(16,185,129,.25)}
+.sc-1:hover .sc-icon{background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;box-shadow:0 8px 24px -6px rgba(16,185,129,.5);transform:scale(1.1) rotate(-6deg)}
+
+/* Sec 2 — Cyan (Highlight) */
+.sc-2{
+  background:linear-gradient(150deg,rgba(6,182,212,.12) 0%,rgba(14,165,233,.06) 55%,rgba(99,102,241,.04) 100%);
+  border:1px solid rgba(6,182,212,.4);
+  box-shadow:0 4px 32px -10px rgba(6,182,212,.35),0 0 0 1px rgba(255,255,255,.04) inset;
+}
+html[data-theme="light"] .sc-2{
+  background:linear-gradient(150deg,rgba(6,182,212,.1) 0%,rgba(255,255,255,.9) 100%);
+  border-color:rgba(6,182,212,.3);
+  box-shadow:0 4px 24px -8px rgba(6,182,212,.25),0 2px 8px -2px rgba(6,182,212,.1);
+}
+.sc-2::before{
+  content:'';
+  position:absolute;
+  top:-80px;right:-80px;
+  width:220px;height:220px;
+  background:radial-gradient(circle,rgba(6,182,212,.22),transparent 68%);
+  pointer-events:none;
+}
+.sc-2:hover{
+  border-color:rgba(6,182,212,.65);
+  box-shadow:0 32px 64px -20px rgba(6,182,212,.45);
+  transform:translateY(-8px);
+}
+.sc-2 .sc-icon{background:linear-gradient(135deg,#06b6d4,#0ea5e9);color:#fff;box-shadow:0 6px 20px -4px rgba(6,182,212,.5)}
+.sc-2:hover .sc-icon{background:linear-gradient(135deg,#0ea5e9,#6366f1);box-shadow:0 8px 28px -6px rgba(6,182,212,.6);transform:scale(1.1) rotate(-6deg)}
+
+/* Sec 3 — Indigo */
+.sc-3{
+  background:linear-gradient(150deg,rgba(99,102,241,.08) 0%,rgba(99,102,241,.02) 100%);
+}
+html[data-theme="light"] .sc-3{background:linear-gradient(150deg,rgba(99,102,241,.07) 0%,rgba(255,255,255,.95) 100%)}
+.sc-3:hover{border-color:rgba(99,102,241,.45);box-shadow:0 28px 56px -20px rgba(99,102,241,.3);transform:translateY(-6px)}
+.sc-3 .sc-icon{background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(99,102,241,.08));color:#6366f1;box-shadow:0 4px 16px -4px rgba(99,102,241,.25)}
+.sc-3:hover .sc-icon{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 8px 24px -6px rgba(99,102,241,.5);transform:scale(1.1) rotate(-6deg)}
+
+/* Shared icon style */
+.sc-icon{
+  width:56px;height:56px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:18px;
+  transition:all .35s cubic-bezier(.2,.8,.2,1);
+  flex-shrink:0;
+  margin-bottom:22px;
+}
+
+/* Highlight badge */
+.highlight-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:99px;
+  font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  background:rgba(6,182,212,.15);color:#06b6d4;
+  border:1px solid rgba(6,182,212,.3);
+  animation:hlPulse 2.5s ease-in-out infinite;
+}
+@keyframes hlPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(6,182,212,0)}
+  50%{box-shadow:0 0 0 4px rgba(6,182,212,.1)}
+}
+
+/* Section label */
+.sc-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.sc-label-green{color:#10b981}
+.sc-label-cyan{color:#06b6d4}
+.sc-label-indigo{color:#6366f1}
+
+/* Title — ensure visible in both themes */
+.sc-title{
+  font-family:'Sora','Inter',sans-serif;
+  font-weight:700;
+  font-size:1.2rem;
+  line-height:1.3;
+  color:var(--text);
+  margin-bottom:12px;
+}
+html[data-theme="light"] .sc-title{color:#0f1c33 !important}
+
+/* Desc */
+.sc-desc{
+  font-size:0.875rem;
+  line-height:1.65;
+  color:var(--text-muted);
+  margin-bottom:24px;
+}
+
+/* Pills */
+.sc-pill{
+  display:inline-flex;align-items:center;
+  padding:5px 12px;border-radius:8px;
+  font-size:11px;font-weight:600;
+  transition:all .25s;
+  border:1px solid transparent;
+}
+.sc-pill-green{background:rgba(16,185,129,.12);color:#10b981;border-color:rgba(16,185,129,.2)}
+.sc-pill-cyan{background:rgba(6,182,212,.12);color:#06b6d4;border-color:rgba(6,182,212,.2)}
+.sc-pill-indigo{background:rgba(99,102,241,.12);color:#6366f1;border-color:rgba(99,102,241,.2)}
+html[data-theme="light"] .sc-pill-green{background:rgba(16,185,129,.1)}
+html[data-theme="light"] .sc-pill-cyan{background:rgba(6,182,212,.1)}
+html[data-theme="light"] .sc-pill-indigo{background:rgba(99,102,241,.1)}
+
+/* Arrow on cards */
+.sc-arrow{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:50%;
+  border:1px solid var(--card-border);
+  color:var(--text-muted);
+  transition:all .3s;
+  flex-shrink:0;
+}
+.section-card-wrap:hover .sc-arrow{
+  background:var(--grad);
+  border-color:transparent;
+  color:#fff;
+  transform:translateX(3px);
+}
 </style>
 </head>
 <body class="min-h-screen relative">
@@ -122,9 +283,12 @@ html[data-theme="light"] body::before{opacity:.5}
               <div class="font-semibold text-emerald-400 mb-1">Section 1</div>
               <div class="text-muted">AI Clinical Intelligence & NLP</div>
             </a>
-            <a onclick="navigate('modules')" class="block p-3 rounded-lg hover:bg-white/5 cursor-pointer">
-              <div class="font-semibold text-cyan-400 mb-1">Section 2</div>
-              <div class="text-muted">Computer Vision & Medical Imaging</div>
+            <a onclick="navigate('modules')" class="block p-3 rounded-lg hover:bg-white/10 cursor-pointer relative group transition-all" style="background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(14,165,233,0.05)); border: 1px solid rgba(6,182,212,0.3); box-shadow: 0 0 20px -5px rgba(6,182,212,0.3);">
+              <div class="flex items-center gap-2 mb-1">
+                <div class="font-bold text-cyan-400 drop-shadow-md">Section 2</div>
+                <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 animate-pulse uppercase tracking-wider">Highlight</span>
+              </div>
+              <div class="text-white text-xs font-medium">Computer Vision & Medical Imaging</div>
             </a>
             <a onclick="navigate('modules')" class="block p-3 rounded-lg hover:bg-white/5 cursor-pointer">
               <div class="font-semibold text-indigo-400 mb-1">Section 3</div>
@@ -180,60 +344,7 @@ html[data-theme="light"] body::before{opacity:.5}
       </div>
       <a onclick="navigate('about')" class="nav-link cursor-pointer" data-nav="about" data-i18n="nav_about">About</a>
       <a onclick="navigate('contact')" class="nav-link cursor-pointer" data-nav="contact" data-i18n="nav_contact">Contact</a>
-      <!-- Vision AI mega menu -->
-      <div class="mega-wrap relative">
-        <a class="nav-link cursor-pointer flex items-center gap-1">Vision AI
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-        </a>
-        <div class="mega-menu glass rounded-2xl p-4 shadow-2xl" style="width:min(700px,92vw)">
-          <div class="grid grid-cols-3 gap-3 text-sm">
-            <a onclick="navigate('xray')" class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer text-cyan-400">
-              <div class="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center flex-shrink-0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></div>
-              <div class="font-semibold text-current">X-Ray AI</div>
-            </a>
-            <a onclick="navigate('skin')" class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer text-amber-400">
-              <div class="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center flex-shrink-0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4-4-1.8-4-4z"/></svg></div>
-              <div class="font-semibold text-current">Skin AI</div>
-            </a>
-            <a onclick="navigate('dental')" class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer text-teal-500">
-              <div class="w-8 h-8 rounded-lg bg-teal-500/15 flex items-center justify-center flex-shrink-0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c-2.5 0-4.5 1.8-4.5 4 0 1.5.8 2.8 2 3.5C8 11 7 13 7 15c0 2.8 1.5 5 3 6.5.4.4.7.5 1 .5H13c.3 0 .6-.1 1-.5C15.5 20 17 17.8 17 15c0-2-.9-4-2.5-5.5 1.2-.7 2-2 2-3.5C16.5 3.8 14.5 2 12 2z"/></svg></div>
-              <div class="font-semibold text-current">Dental AI</div>
-            </a>
-            <a onclick="navigate('nail')" class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer text-rose-400">
-              <div class="w-8 h-8 rounded-lg bg-rose-500/15 flex items-center justify-center flex-shrink-0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11v8a5 5 0 0 0 10 0v-8c0-2.76-2.24-5-5-5S7 8.24 7 11z"/><path d="M7 11h10"/><path d="M12 2v4"/></svg></div>
-              <div class="font-semibold text-current">Nail AI</div>
-            </a>
-            <a onclick="navigate('eye')" class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer text-cyan-400">
-              <div class="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center flex-shrink-0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-              <div class="font-semibold text-current">Eye AI</div>
-            </a>
-            <a onclick="navigate('oral')" class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer text-purple-400">
-              <div class="w-8 h-8 rounded-lg bg-purple-500/15 flex items-center justify-center flex-shrink-0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
-              <div class="font-semibold text-current">Oral AI</div>
-            </a>
-            <a onclick="navigate('hair')" class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer text-yellow-500">
-              <div class="w-8 h-8 rounded-lg bg-yellow-500/15 flex items-center justify-center flex-shrink-0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 2v13M12 2v13M17 2v13M4 15h16v7H4z"/></svg></div>
-              <div class="font-semibold text-current">Hair AI</div>
-            </a>
-            <a onclick="navigate('ct')" class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer text-blue-400">
-              <div class="w-8 h-8 rounded-lg bg-blue-500/15 flex items-center justify-center flex-shrink-0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M12 2v20M2 12h20"/></svg></div>
-              <div class="font-semibold text-current">CT Scan AI</div>
-            </a>
-            <a onclick="navigate('mri')" class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer text-indigo-400">
-              <div class="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center flex-shrink-0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4zM4 12h16M12 4v16"/></svg></div>
-              <div class="font-semibold text-current">MRI AI</div>
-            </a>
-            <a onclick="navigate('ultrasound')" class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer text-pink-400">
-              <div class="w-8 h-8 rounded-lg bg-pink-500/15 flex items-center justify-center flex-shrink-0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-              <div class="font-semibold text-current">Ultrasound AI</div>
-            </a>
-            <a onclick="navigate('histopathology')" class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer text-emerald-400">
-              <div class="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/></svg></div>
-              <div class="font-semibold text-current">Histopathology</div>
-            </a>
-          </div>
-        </div>
-      </div>
+
     </div>
 
     <!-- Right controls -->
@@ -413,41 +524,97 @@ html[data-theme="light"] body::before{opacity:.5}
         <h2 class="font-display font-extrabold text-3xl lg:text-5xl tracking-tight" data-i18n="home_sec_title">One platform. Three intelligences.</h2>
         <p class="text-muted mt-4 text-lg" data-i18n="home_sec_desc">From clinical NLP to computer vision to predictive analytics — BIHOS covers the entire healthcare intelligence spectrum.</p>
       </div>
-      <div class="grid lg:grid-cols-3 gap-6">
-        <!-- Section 1 -->
-        <div class="card rounded-3xl p-8 cursor-pointer" onclick="navigate('modules')">
-          <div class="module-icon mb-5"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zM12 8v4M12 16h.01"/></svg></div>
-          <div class="text-xs text-emerald-400 font-bold tracking-widest mb-2">SECTION 01</div>
-          <h3 class="font-display font-bold text-xl mb-3" data-i18n="sec1_title">AI Clinical Intelligence & NLP System</h3>
-          <p class="text-muted text-sm leading-relaxed mb-5" data-i18n="sec1_desc">LLM + RAG + Medical Reasoning engine that reads reports, understands prescriptions, predicts diseases, and retrieves global clinical guidelines.</p>
-          <div class="flex flex-wrap gap-2">
-            <span class="text-xs px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400">4 Modules</span>
-            <span class="text-xs px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400">19 Submodules</span>
+
+      <div class="sections-grid">
+
+        <!-- ── Section 1 — Clinical AI ── -->
+        <div class="section-card-wrap sc-1" onclick="navigate('modules')" role="button" tabindex="0">
+          <!-- Subtle corner accent -->
+          <div style="position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:radial-gradient(circle,rgba(16,185,129,.12),transparent 65%);pointer-events:none"></div>
+
+          <!-- Icon + header row -->
+          <div class="flex items-start justify-between mb-2">
+            <div class="sc-icon sc-1">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0H5a2 2 0 0 1-2-2V9m6 5h10a2 2 0 0 0 2-2V9m0 0H5"/><circle cx="12" cy="18" r="3"/><path d="M12 13v2"/></svg>
+            </div>
+            <div class="sc-arrow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+
+          <div class="sc-body">
+            <div class="sc-label sc-label-green">Section 01</div>
+            <h3 class="sc-title" data-i18n="sec1_title">AI Clinical Intelligence &amp; NLP System</h3>
+            <p class="sc-desc" data-i18n="sec1_desc">LLM + RAG + Medical Reasoning engine that reads reports, understands prescriptions, predicts diseases, and retrieves global clinical guidelines.</p>
+          </div>
+
+          <div class="flex flex-wrap gap-2 pt-2" style="border-top:1px solid var(--card-border)">
+            <span class="sc-pill sc-pill-green">4 Modules</span>
+            <span class="sc-pill sc-pill-green">19 Submodules</span>
           </div>
         </div>
-        <!-- Section 2 -->
-        <div class="card rounded-3xl p-8 cursor-pointer" onclick="navigate('modules')">
-          <div class="module-icon mb-5"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
-          <div class="text-xs text-cyan-400 font-bold tracking-widest mb-2">SECTION 02</div>
-          <h3 class="font-display font-bold text-xl mb-3" data-i18n="sec2_title">Computer Vision & Medical Imaging</h3>
-          <p class="text-muted text-sm leading-relaxed mb-5" data-i18n="sec2_desc">Vision AI + OCR + VLM for skin, eye, dental, oral, nail, hair diseases plus X-ray, CT, MRI, Ultrasound, Histopathology imaging analysis.</p>
-          <div class="flex flex-wrap gap-2">
-            <span class="text-xs px-2 py-1 rounded-md bg-cyan-500/10 text-cyan-400">1 Module</span>
-            <span class="text-xs px-2 py-1 rounded-md bg-cyan-500/10 text-cyan-400">7 Disease Groups</span>
-            <span class="text-xs px-2 py-1 rounded-md bg-cyan-500/10 text-cyan-400">30+ Conditions</span>
+
+        <!-- ── Section 2 — Computer Vision (Highlighted) ── -->
+        <div class="section-card-wrap sc-2" onclick="navigate('modules')" role="button" tabindex="0">
+          <!-- Radial glow top-right -->
+          <!-- Highlight badge top-right -->
+          <div style="position:absolute;top:18px;right:18px;z-index:2">
+            <span class="highlight-badge">
+              <span style="width:6px;height:6px;border-radius:50%;background:#06b6d4;display:inline-block"></span>
+              Highlight
+            </span>
+          </div>
+
+          <!-- Icon -->
+          <div class="flex items-start justify-between mb-2">
+            <div class="sc-icon sc-2">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+            </div>
+            <div class="sc-arrow" style="margin-top:38px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+
+          <div class="sc-body">
+            <div class="sc-label sc-label-cyan">Section 02</div>
+            <h3 class="sc-title" data-i18n="sec2_title">Computer Vision &amp; Medical Imaging</h3>
+            <p class="sc-desc" data-i18n="sec2_desc">Vision AI + OCR + VLM for skin, eye, dental, oral, nail, hair diseases plus X-ray, CT, MRI, Ultrasound, Histopathology imaging analysis.</p>
+          </div>
+
+          <div class="flex flex-wrap gap-2 pt-2" style="border-top:1px solid rgba(6,182,212,.2)">
+            <span class="sc-pill sc-pill-cyan">1 Module</span>
+            <span class="sc-pill sc-pill-cyan">7 Disease Groups</span>
+            <span class="sc-pill sc-pill-cyan">30+ Conditions</span>
           </div>
         </div>
-        <!-- Section 3 -->
-        <div class="card rounded-3xl p-8 cursor-pointer" onclick="navigate('modules')">
-          <div class="module-icon mb-5"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 12l4-4 4 4 5-5"/></svg></div>
-          <div class="text-xs text-indigo-400 font-bold tracking-widest mb-2">SECTION 03</div>
-          <h3 class="font-display font-bold text-xl mb-3" data-i18n="sec3_title">Predictive Analytics & Platform</h3>
-          <p class="text-muted text-sm leading-relaxed mb-5" data-i18n="sec3_desc">National disease surveillance, digital health twin, emergency AI, nutrition, mental health, vaccination, and full healthcare infrastructure.</p>
-          <div class="flex flex-wrap gap-2">
-            <span class="text-xs px-2 py-1 rounded-md bg-indigo-500/10 text-indigo-400">7 Modules</span>
-            <span class="text-xs px-2 py-1 rounded-md bg-indigo-500/10 text-indigo-400">40+ Submodules</span>
+
+        <!-- ── Section 3 — Predictive Analytics ── -->
+        <div class="section-card-wrap sc-3" onclick="navigate('modules')" role="button" tabindex="0">
+          <!-- Subtle corner accent -->
+          <div style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:radial-gradient(circle,rgba(99,102,241,.12),transparent 65%);pointer-events:none"></div>
+
+          <!-- Icon + header row -->
+          <div class="flex items-start justify-between mb-2">
+            <div class="sc-icon sc-3">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18M7 16l4-5 4 3 5-7"/></svg>
+            </div>
+            <div class="sc-arrow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+
+          <div class="sc-body">
+            <div class="sc-label sc-label-indigo">Section 03</div>
+            <h3 class="sc-title" data-i18n="sec3_title">Predictive Analytics &amp; Platform</h3>
+            <p class="sc-desc" data-i18n="sec3_desc">National disease surveillance, digital health twin, emergency AI, nutrition, mental health, vaccination, and full healthcare infrastructure.</p>
+          </div>
+
+          <div class="flex flex-wrap gap-2 pt-2" style="border-top:1px solid var(--card-border)">
+            <span class="sc-pill sc-pill-indigo">7 Modules</span>
+            <span class="sc-pill sc-pill-indigo">40+ Submodules</span>
           </div>
         </div>
+
       </div>
     </div>
   </section>
@@ -469,14 +636,426 @@ html[data-theme="light"] body::before{opacity:.5}
     </div>
   </section>
 
-  <!-- DOCTORS -->
+  <!-- ═══════════════ DEPLOYED AI MODELS SHOWCASE ═══════════════ -->
+  <section class="py-24 relative overflow-hidden" id="models-showcase">
+    <style>
+      /* ── Premium Model Showcase ── */
+      @keyframes model-glow-pulse {
+        0%,100% { box-shadow: 0 0 30px -5px rgba(16,185,129,0); }
+        50%      { box-shadow: 0 0 40px -5px rgba(16,185,129,.35); }
+      }
+      @keyframes tflite-badge-shine {
+        0%   { background-position: -200% center; }
+        100% { background-position: 200% center; }
+      }
+      .model-showcase-card {
+        background: var(--card);
+        border: 1px solid var(--card-border);
+        border-radius: 28px;
+        overflow: hidden;
+        transition: all .45s cubic-bezier(.2,.8,.2,1);
+        cursor: pointer;
+        position: relative;
+      }
+      .model-showcase-card::before {
+        content:''; position:absolute; inset:0; opacity:0;
+        transition: opacity .45s;
+        border-radius: inherit;
+        pointer-events: none;
+      }
+      .model-showcase-card:hover {
+        transform: translateY(-10px);
+        border-color: transparent;
+      }
+      .model-showcase-card.eye-card:hover  { box-shadow: 0 30px 60px -20px rgba(6,182,212,.45); border-color: rgba(6,182,212,.4); }
+      .model-showcase-card.hair-card:hover { box-shadow: 0 30px 60px -20px rgba(234,179,8,.45);  border-color: rgba(234,179,8,.4);  }
+      .model-showcase-card.nail-card:hover { box-shadow: 0 30px 60px -20px rgba(244,63,94,.45);  border-color: rgba(244,63,94,.4);  }
+      .model-showcase-card.skin-card:hover { box-shadow: 0 30px 60px -20px rgba(245,158,11,.45); border-color: rgba(245,158,11,.4); }
+      .model-hero-bg {
+        height: 180px;
+        position: relative;
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden;
+      }
+      .model-hero-bg .hero-glow {
+        position: absolute; inset:0; border-radius: 0;
+        filter: blur(50px); opacity: .55;
+      }
+      .model-hero-icon {
+        position: relative; z-index: 2;
+        width: 96px; height: 96px; border-radius: 24px;
+        display: flex; align-items: center; justify-content: center;
+        backdrop-filter: blur(12px);
+        border: 1.5px solid rgba(255,255,255,.15);
+        animation: float 6s ease-in-out infinite;
+      }
+      .model-tflite-badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 5px 12px; border-radius: 99px;
+        font-size: 10px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase;
+        background: linear-gradient(90deg, #10b981 0%, #06b6d4 50%, #10b981 100%);
+        background-size: 200% auto;
+        color: #fff;
+        animation: tflite-badge-shine 3s linear infinite;
+      }
+      .model-stat-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;
+      }
+      .model-stat-item {
+        background: var(--card); border: 1px solid var(--card-border);
+        border-radius: 14px; padding: 12px; text-align: center;
+        transition: all .3s;
+      }
+      .model-showcase-card:hover .model-stat-item {
+        border-color: rgba(255,255,255,.12);
+        background: rgba(255,255,255,.04);
+      }
+      .model-stat-value {
+        font-family: 'Sora', sans-serif; font-weight: 800; font-size: 20px;
+        background: var(--grad); -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .model-stat-label {
+        font-size: 10px; font-weight: 600; color: var(--text-muted);
+        text-transform: uppercase; letter-spacing: .7px; margin-top: 2px;
+      }
+      .model-live-dot {
+        width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+        box-shadow: 0 0 0 3px rgba(16,185,129,.2);
+        animation: model-glow-pulse 2s ease-in-out infinite;
+      }
+      .model-arch-tag {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 600;
+        border: 1px solid var(--card-border); color: var(--text-muted);
+        transition: all .3s;
+      }
+      .model-showcase-card:hover .model-arch-tag {
+        border-color: rgba(255,255,255,.15);
+        color: var(--text);
+      }
+      .model-action-btn {
+        width: 100%; padding: 14px; border-radius: 16px;
+        font-weight: 700; font-size: 14px; letter-spacing: .3px;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        transition: all .3s; border: none; cursor: pointer; color: #fff;
+        position: relative; overflow: hidden;
+      }
+      .model-action-btn::after {
+        content:''; position:absolute; inset:0;
+        background: rgba(255,255,255,0); transition: background .3s;
+      }
+      .model-action-btn:hover::after { background: rgba(255,255,255,.08); }
+      .model-action-btn:hover { transform: translateY(-1px); }
+    </style>
+
+    <!-- Background decorations -->
+    <div class="absolute inset-0 dot-pattern opacity-30"></div>
+    <div class="aurora" style="width:600px;height:400px;background:linear-gradient(135deg,#10b981,#06b6d4);top:10%;left:-200px;opacity:.15"></div>
+    <div class="aurora" style="width:500px;height:400px;background:linear-gradient(135deg,#f59e0b,#ef4444);bottom:10%;right:-150px;opacity:.12"></div>
+
+    <div class="max-w-7xl mx-auto px-5 lg:px-8 relative">
+      <!-- Section header -->
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="section-tag mb-4">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Production AI Models — Live & Deployed
+        </div>
+        <h2 class="font-display font-extrabold text-3xl lg:text-5xl tracking-tight">
+          4 EfficientNetB2 Models.<br>
+          <span class="grad-text">Trained. Optimized. Live.</span>
+        </h2>
+        <p class="text-muted mt-4 text-lg max-w-2xl mx-auto">
+          Our computer vision models are custom-trained EfficientNetB2 architectures, quantized to FP16 TFLite for blazing-fast mobile and server inference — deployed and ready for clinical-grade analysis.
+        </p>
+      </div>
+
+      <!-- 4 Model Cards -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+
+        <!-- EYE MODEL -->
+        <div class="model-showcase-card eye-card" onclick="navigate('eye')">
+          <div class="model-hero-bg" style="background:linear-gradient(135deg,rgba(6,182,212,.08),rgba(14,165,233,.05))">
+            <div class="hero-glow" style="background:radial-gradient(ellipse at center,#06b6d4,transparent 70%)"></div>
+            <div class="model-hero-icon" style="background:rgba(6,182,212,.15)">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="1.5">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="12" cy="12" r="1.5" fill="#06b6d4"/>
+              </svg>
+            </div>
+            <!-- Floating particles -->
+            <div class="absolute top-5 right-5 w-2 h-2 rounded-full bg-cyan-400/40"></div>
+            <div class="absolute bottom-8 left-6 w-1.5 h-1.5 rounded-full bg-cyan-300/30"></div>
+            <div class="absolute top-1/2 right-8 w-1 h-1 rounded-full bg-cyan-200/50"></div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="model-live-dot" style="background:#06b6d4;box-shadow:0 0 0 3px rgba(6,182,212,.2)"></span>
+                <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">Live</span>
+              </div>
+              <span class="model-tflite-badge">TFLite</span>
+            </div>
+            <h3 class="font-display font-extrabold text-xl mb-1" style="color:var(--text)">Eye Disease AI</h3>
+            <p class="text-xs text-muted mb-4 leading-relaxed">Retinal & slit-lamp image analysis for 4 eye conditions with confidence scoring</p>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="model-arch-tag">EfficientNetB2</span>
+              <span class="model-arch-tag">FP16 Quant</span>
+            </div>
+            <div class="model-stat-grid">
+              <div class="model-stat-item">
+                <div class="model-stat-value" style="background:linear-gradient(135deg,#06b6d4,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent">4</div>
+                <div class="model-stat-label">Classes</div>
+              </div>
+              <div class="model-stat-item">
+                <div class="model-stat-value" style="background:linear-gradient(135deg,#06b6d4,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent">~16MB</div>
+                <div class="model-stat-label">Size</div>
+              </div>
+            </div>
+            <div class="text-xs text-muted mt-3 font-mono truncate opacity-60">eye_efficientnetb2_fp16.tflite</div>
+            <button class="model-action-btn mt-4" style="background:linear-gradient(135deg,#06b6d4,#0ea5e9)" onclick="navigate('eye');event.stopPropagation()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Analyse Now
+            </button>
+          </div>
+        </div>
+
+        <!-- HAIR MODEL -->
+        <div class="model-showcase-card hair-card" onclick="navigate('hair')">
+          <div class="model-hero-bg" style="background:linear-gradient(135deg,rgba(234,179,8,.08),rgba(245,158,11,.05))">
+            <div class="hero-glow" style="background:radial-gradient(ellipse at center,#eab308,transparent 70%)"></div>
+            <div class="model-hero-icon" style="background:rgba(234,179,8,.15)">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="1.5">
+                <path d="M7 2v13M12 2v13M17 2v13"/>
+                <path d="M4 15h16v7H4z" rx="2"/>
+                <path d="M4 19h16" stroke-opacity=".5"/>
+              </svg>
+            </div>
+            <div class="absolute top-5 right-5 w-2 h-2 rounded-full bg-yellow-400/40"></div>
+            <div class="absolute bottom-8 left-6 w-1.5 h-1.5 rounded-full bg-yellow-300/30"></div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="model-live-dot" style="background:#eab308;box-shadow:0 0 0 3px rgba(234,179,8,.2)"></span>
+                <span class="text-[10px] font-bold text-yellow-400 uppercase tracking-wider">Live</span>
+              </div>
+              <span class="model-tflite-badge">TFLite</span>
+            </div>
+            <h3 class="font-display font-extrabold text-xl mb-1" style="color:var(--text)">Hair Disease AI</h3>
+            <p class="text-xs text-muted mb-4 leading-relaxed">Scalp and hair follicle condition analysis for multiple hair pathologies</p>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="model-arch-tag">EfficientNetB2</span>
+              <span class="model-arch-tag">FP16 Quant</span>
+            </div>
+            <div class="model-stat-grid">
+              <div class="model-stat-item">
+                <div class="model-stat-value" style="background:linear-gradient(135deg,#eab308,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Multi</div>
+                <div class="model-stat-label">Classes</div>
+              </div>
+              <div class="model-stat-item">
+                <div class="model-stat-value" style="background:linear-gradient(135deg,#eab308,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent">~16MB</div>
+                <div class="model-stat-label">Size</div>
+              </div>
+            </div>
+            <div class="text-xs text-muted mt-3 font-mono truncate opacity-60">hair_efficientnetb2_fp16.tflite</div>
+            <button class="model-action-btn mt-4" style="background:linear-gradient(135deg,#eab308,#f59e0b)" onclick="navigate('hair');event.stopPropagation()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 2v13M12 2v13M17 2v13"/><rect x="4" y="15" width="16" height="7"/></svg>
+              Analyse Now
+            </button>
+          </div>
+        </div>
+
+        <!-- NAIL MODEL -->
+        <div class="model-showcase-card nail-card" onclick="navigate('nail')">
+          <div class="model-hero-bg" style="background:linear-gradient(135deg,rgba(244,63,94,.08),rgba(139,92,246,.05))">
+            <div class="hero-glow" style="background:radial-gradient(ellipse at center,#f43f5e,transparent 70%)"></div>
+            <div class="model-hero-icon" style="background:rgba(244,63,94,.15)">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="1.5">
+                <path d="M7 11v8a5 5 0 0 0 10 0v-8c0-2.76-2.24-5-5-5S7 8.24 7 11z"/>
+                <path d="M7 11h10"/>
+                <path d="M12 2v4"/>
+              </svg>
+            </div>
+            <div class="absolute top-5 right-5 w-2 h-2 rounded-full bg-rose-400/40"></div>
+            <div class="absolute bottom-8 left-6 w-1.5 h-1.5 rounded-full bg-rose-300/30"></div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="model-live-dot" style="background:#f43f5e;box-shadow:0 0 0 3px rgba(244,63,94,.2)"></span>
+                <span class="text-[10px] font-bold text-rose-400 uppercase tracking-wider">Live</span>
+              </div>
+              <span class="model-tflite-badge">TFLite</span>
+            </div>
+            <h3 class="font-display font-extrabold text-xl mb-1" style="color:var(--text)">Nail Disease AI</h3>
+            <p class="text-xs text-muted mb-4 leading-relaxed">Fingernail & toenail condition classification across 6 nail pathologies</p>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="model-arch-tag">EfficientNetB2</span>
+              <span class="model-arch-tag">FP16 Quant</span>
+            </div>
+            <div class="model-stat-grid">
+              <div class="model-stat-item">
+                <div class="model-stat-value" style="background:linear-gradient(135deg,#f43f5e,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent">6</div>
+                <div class="model-stat-label">Classes</div>
+              </div>
+              <div class="model-stat-item">
+                <div class="model-stat-value" style="background:linear-gradient(135deg,#f43f5e,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent">~16MB</div>
+                <div class="model-stat-label">Size</div>
+              </div>
+            </div>
+            <div class="text-xs text-muted mt-3 font-mono truncate opacity-60">nail_efficientnetb2_fp16.tflite</div>
+            <button class="model-action-btn mt-4" style="background:linear-gradient(135deg,#f43f5e,#8b5cf6)" onclick="navigate('nail');event.stopPropagation()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 11v8a5 5 0 0 0 10 0v-8c0-2.76-2.24-5-5-5S7 8.24 7 11z"/><path d="M7 11h10"/></svg>
+              Analyse Now
+            </button>
+          </div>
+        </div>
+
+        <!-- SKIN MODEL -->
+        <div class="model-showcase-card skin-card" onclick="navigate('skin')">
+          <div class="model-hero-bg" style="background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(239,68,68,.05))">
+            <div class="hero-glow" style="background:radial-gradient(ellipse at center,#f59e0b,transparent 70%)"></div>
+            <div class="model-hero-icon" style="background:rgba(245,158,11,.15)">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4-4-1.8-4-4z"/>
+                <circle cx="12" cy="12" r="1.5" fill="#f59e0b"/>
+              </svg>
+            </div>
+            <div class="absolute top-5 right-5 w-2 h-2 rounded-full bg-amber-400/40"></div>
+            <div class="absolute bottom-8 left-6 w-1.5 h-1.5 rounded-full bg-amber-300/30"></div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="model-live-dot" style="background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.2)"></span>
+                <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Live</span>
+              </div>
+              <span class="model-tflite-badge">TFLite</span>
+            </div>
+            <h3 class="font-display font-extrabold text-xl mb-1" style="color:var(--text)">Skin Disease AI</h3>
+            <p class="text-xs text-muted mb-4 leading-relaxed">Dermatological image classification across 20 skin conditions with severity</p>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span class="model-arch-tag">EfficientNetB2</span>
+              <span class="model-arch-tag">FP16 Quant</span>
+            </div>
+            <div class="model-stat-grid">
+              <div class="model-stat-item">
+                <div class="model-stat-value" style="background:linear-gradient(135deg,#f59e0b,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent">20</div>
+                <div class="model-stat-label">Classes</div>
+              </div>
+              <div class="model-stat-item">
+                <div class="model-stat-value" style="background:linear-gradient(135deg,#f59e0b,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent">~16MB</div>
+                <div class="model-stat-label">Size</div>
+              </div>
+            </div>
+            <div class="text-xs text-muted mt-3 font-mono truncate opacity-60">skin_efficientnetb2_fp16.tflite</div>
+            <button class="model-action-btn mt-4" style="background:linear-gradient(135deg,#f59e0b,#ef4444)" onclick="navigate('skin');event.stopPropagation()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+              Analyse Now
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom tech strip -->
+      <div class="card rounded-3xl p-8">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+          <div>
+            <div class="w-12 h-12 rounded-2xl mx-auto mb-3 flex items-center justify-center" style="background:rgba(16,185,129,.12)">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="font-display font-bold text-lg">EfficientNetB2</div>
+            <div class="text-xs text-muted mt-1">Base Architecture</div>
+          </div>
+          <div>
+            <div class="w-12 h-12 rounded-2xl mx-auto mb-3 flex items-center justify-center" style="background:rgba(6,182,212,.12)">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div class="font-display font-bold text-lg">FP16 TFLite</div>
+            <div class="text-xs text-muted mt-1">Quantized Format</div>
+          </div>
+          <div>
+            <div class="w-12 h-12 rounded-2xl mx-auto mb-3 flex items-center justify-center" style="background:rgba(99,102,241,.12)">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            </div>
+            <div class="font-display font-bold text-lg">4 Models</div>
+            <div class="text-xs text-muted mt-1">Deployed & Live</div>
+          </div>
+          <div>
+            <div class="w-12 h-12 rounded-2xl mx-auto mb-3 flex items-center justify-center" style="background:rgba(245,158,11,.12)">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="font-display font-bold text-lg">Clinical Grade</div>
+            <div class="text-xs text-muted mt-1">Research Validated</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TEACHERS -->
   <section class="py-24">
     <div class="max-w-7xl mx-auto px-5 lg:px-8">
       <div class="text-center mb-12">
-        <div class="section-tag mb-4" data-i18n="doctors_tag">Meet Our Specialists</div>
-        <h2 class="font-display font-extrabold text-3xl lg:text-5xl tracking-tight" data-i18n="doctors_title">Trusted by leading doctors</h2>
+        <div class="section-tag mb-4">Meet Our Teachers</div>
+        <h2 class="font-display font-extrabold text-3xl lg:text-5xl tracking-tight">Guided by distinguished educators</h2>
       </div>
-      <div id="homeDoctors" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+
+        <!-- Teacher 1: Prof. Dr. Md. Saifur Rahman -->
+        <div class="card rounded-3xl overflow-hidden" style="cursor:default">
+          <div class="aspect-square overflow-hidden bg-slate-800 relative">
+            <img src="Teacher/teacher 1.jpeg" alt="Prof. Dr. Md. Saifur Rahman" class="w-full h-full object-cover" style="transition:transform .6s cubic-bezier(.2,.8,.2,1)" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" onerror="this.style.display='none';this.parentElement.classList.add('flex','items-center','justify-center');this.parentElement.innerHTML='&lt;div class=&quot;text-5xl font-display font-black grad-text&quot;&gt;SR&lt;/div&gt;'"/>
+            <div class="absolute top-3 left-3 px-2 py-1 rounded-md text-[10px] font-bold tracking-wider" style="background:rgba(0,0,0,.55);color:#10b981">01</div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="font-display font-bold text-lg leading-tight">Prof. Dr. Md. Saifur Rahman</h3>
+            <div class="text-sm grad-text font-semibold mt-1">Professor</div>
+            <div class="flex items-center justify-center gap-2 mt-3 text-xs text-muted">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              <span>Comilla University</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Teacher 2: Prof. Dr. Md. Tofael Ahmed -->
+        <div class="card rounded-3xl overflow-hidden" style="cursor:default">
+          <div class="aspect-square overflow-hidden bg-slate-800 relative">
+            <img src="Teacher/Teacher 2.jpeg" alt="Prof. Dr. Md. Tofael Ahmed" class="w-full h-full object-cover" style="transition:transform .6s cubic-bezier(.2,.8,.2,1)" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" onerror="this.style.display='none';this.parentElement.classList.add('flex','items-center','justify-center');this.parentElement.innerHTML='&lt;div class=&quot;text-5xl font-display font-black grad-text&quot;&gt;TA&lt;/div&gt;'"/>
+            <div class="absolute top-3 left-3 px-2 py-1 rounded-md text-[10px] font-bold tracking-wider" style="background:rgba(0,0,0,.55);color:#10b981">02</div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="font-display font-bold text-lg leading-tight">Prof. Dr. Md. Tofael Ahmed</h3>
+            <div class="text-sm grad-text font-semibold mt-1">Professor</div>
+            <div class="flex items-center justify-center gap-2 mt-3 text-xs text-muted">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              <span>Comilla University</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Teacher 3: Alimul Rajee -->
+        <div class="card rounded-3xl overflow-hidden" style="cursor:default">
+          <div class="aspect-square overflow-hidden bg-slate-800 relative">
+            <img src="Teacher/teacher 3.jpeg" alt="Alimul Rajee" class="w-full h-full object-cover" style="transition:transform .6s cubic-bezier(.2,.8,.2,1)" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" onerror="this.style.display='none';this.parentElement.classList.add('flex','items-center','justify-center');this.parentElement.innerHTML='&lt;div class=&quot;text-5xl font-display font-black grad-text&quot;&gt;AR&lt;/div&gt;'"/>
+            <div class="absolute top-3 left-3 px-2 py-1 rounded-md text-[10px] font-bold tracking-wider" style="background:rgba(0,0,0,.55);color:#10b981">03</div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="font-display font-bold text-lg leading-tight">Alimul Rajee</h3>
+            <div class="text-sm grad-text font-semibold mt-1">Assistant Professor</div>
+            <div class="flex items-center justify-center gap-2 mt-3 text-xs text-muted">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              <span>Comilla University</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
@@ -595,7 +1174,10 @@ html[data-theme="light"] body::before{opacity:.5}
     <div class="max-w-7xl mx-auto px-5 lg:px-8 flex flex-wrap gap-2">
       <button class="sec-filter active px-5 py-2 rounded-full text-sm font-semibold" data-sec="all" data-i18n="filter_all">All Sections</button>
       <button class="sec-filter px-5 py-2 rounded-full text-sm font-semibold" data-sec="1">Section 1 — Clinical AI</button>
-      <button class="sec-filter px-5 py-2 rounded-full text-sm font-semibold" data-sec="2">Section 2 — Vision</button>
+      <button class="sec-filter px-5 py-2 rounded-full text-sm font-bold relative overflow-hidden transition-all" data-sec="2" style="background: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(14,165,233,0.1)); border: 1px solid rgba(6,182,212,0.4); box-shadow: 0 0 15px -3px rgba(6,182,212,0.4); color: #06b6d4;">
+        Section 2 — Vision
+        <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+      </button>
       <button class="sec-filter px-5 py-2 rounded-full text-sm font-semibold" data-sec="3">Section 3 — Platform</button>
     </div>
   </section>
@@ -850,40 +1432,92 @@ html[data-theme="light"] body::before{opacity:.5}
 
         <!-- ─── PANEL 1: Model Selection ─── -->
         <div class="eye-panel active" id="eyePanel1">
-          <div class="text-center mb-6">
+          <div class="text-center mb-8">
             <div class="text-xs text-muted uppercase tracking-widest font-semibold mb-2">Step 1 of 5</div>
             <h2 class="font-display font-bold text-2xl">Select AI Model</h2>
             <p class="text-muted text-sm mt-2">Choose the eye disease classification model for analysis</p>
           </div>
-          <!-- Model card -->
-          <div class="grid md:grid-cols-1 gap-4 max-w-2xl mx-auto">
-            <div class="eye-model-card cursor-pointer border-2 relative" style="border-color:rgba(6,182,212,.4)" id="eyeModelCard1" onclick="selectEyeModel('best_eye_model.keras', this)">
-              <div class="absolute top-4 right-4 w-5 h-5 rounded-full flex items-center justify-center" style="background:#06b6d4" id="eyeModelCheck1">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+          <!-- Model cards — premium dual selection -->
+          <div class="grid md:grid-cols-2 gap-5 max-w-3xl mx-auto">
+
+            <!-- TFLite Model — RECOMMENDED -->
+            <div class="relative rounded-2xl cursor-pointer overflow-hidden transition-all duration-300 border-2"
+                 style="background:linear-gradient(135deg,rgba(6,182,212,.1),rgba(14,165,233,.06));border-color:rgba(6,182,212,.5);box-shadow:0 0 30px -10px rgba(6,182,212,.4)"
+                 id="eyeModelCard2" onclick="selectEyeModel('eye_efficientnetb2_fp16.tflite', this)">
+              <!-- Recommended badge -->
+              <div class="absolute top-0 left-0 right-0 h-1" style="background:linear-gradient(90deg,#06b6d4,#0ea5e9)"></div>
+              <div class="absolute top-3 left-3 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider text-white" style="background:linear-gradient(135deg,#06b6d4,#0ea5e9)">★ RECOMMENDED</div>
+              <!-- Selected checkmark -->
+              <div class="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center" style="background:#06b6d4" id="eyeModelCheck2">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
               </div>
-              <div class="flex items-start gap-4">
-                <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,rgba(6,182,212,.2),rgba(14,165,233,.2))">
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </div>
-                <div class="flex-1">
-                  <div class="font-display font-bold text-lg">best_eye_model.keras</div>
-                  <div class="text-xs text-muted mt-0.5">Keras CNN · Eye Disease Classifier</div>
-                  <div class="flex flex-wrap gap-2 mt-3">
-                    <span class="text-[11px] px-2.5 py-1 rounded-md font-semibold" style="background:rgba(6,182,212,.12);color:#06b6d4">4 Disease Classes</span>
-                    <span class="text-[11px] px-2.5 py-1 rounded-md font-semibold" style="background:rgba(16,185,129,.12);color:#10b981">Keras / TensorFlow</span>
-                    <span class="text-[11px] px-2.5 py-1 rounded-md font-semibold" style="background:rgba(99,102,241,.12);color:#6366f1">~14 MB</span>
-                    <span class="text-[11px] px-2.5 py-1 rounded-md font-semibold" style="background:rgba(6,182,212,.12);color:#06b6d4">Softmax Output</span>
+              <div class="p-5 pt-10">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,rgba(6,182,212,.25),rgba(14,165,233,.2))">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                  </div>
+                  <div>
+                    <div class="font-display font-bold text-base leading-tight">EfficientNetB2 TFLite</div>
+                    <div class="text-xs text-muted mt-0.5">FP16 Quantized · Optimized</div>
                   </div>
                 </div>
-              </div>
-              <!-- 4 conditions preview -->
-              <div class="mt-4 pt-4 border-t" style="border-color:var(--card-border)">
-                <div class="text-xs text-muted font-semibold uppercase tracking-wider mb-2">Detectable Conditions (4)</div>
-                <div class="flex flex-wrap gap-1.5" id="eyeConditionPills">
-                  <!-- filled by JS -->
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  <span class="text-[10px] px-2 py-1 rounded-md font-bold" style="background:rgba(6,182,212,.15);color:#06b6d4">TFLite FP16</span>
+                  <span class="text-[10px] px-2 py-1 rounded-md font-bold" style="background:rgba(16,185,129,.15);color:#10b981">4 Classes</span>
+                  <span class="text-[10px] px-2 py-1 rounded-md font-bold" style="background:rgba(99,102,241,.15);color:#6366f1">~16 MB</span>
+                </div>
+                <div class="text-[10px] text-muted font-mono mb-3 truncate opacity-70">eye_efficientnetb2_fp16.tflite</div>
+                <div class="space-y-1.5 text-xs">
+                  <div class="flex items-center gap-2 text-muted"><span style="color:#06b6d4">✓</span> Faster inference speed</div>
+                  <div class="flex items-center gap-2 text-muted"><span style="color:#06b6d4">✓</span> Mobile & server optimized</div>
+                  <div class="flex items-center gap-2 text-muted"><span style="color:#06b6d4">✓</span> EfficientNetB2 backbone</div>
                 </div>
               </div>
             </div>
+
+            <!-- Keras Model -->
+            <div class="relative rounded-2xl cursor-pointer overflow-hidden transition-all duration-300 border-2"
+                 style="background:linear-gradient(135deg,rgba(6,182,212,.05),rgba(14,165,233,.03));border-color:rgba(6,182,212,.2)"
+                 id="eyeModelCard1" onclick="selectEyeModel('best_eye_model.keras', this)">
+              <div class="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center opacity-0" style="background:#06b6d4" id="eyeModelCheck1">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+              </div>
+              <div class="p-5">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,rgba(6,182,212,.15),rgba(14,165,233,.12))">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </div>
+                  <div>
+                    <div class="font-display font-bold text-base leading-tight">Keras CNN Model</div>
+                    <div class="text-xs text-muted mt-0.5">TensorFlow / Keras · Full precision</div>
+                  </div>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-4">
+                  <span class="text-[10px] px-2 py-1 rounded-md font-bold" style="background:rgba(16,185,129,.12);color:#10b981">Keras/.h5</span>
+                  <span class="text-[10px] px-2 py-1 rounded-md font-bold" style="background:rgba(6,182,212,.12);color:#06b6d4">4 Classes</span>
+                  <span class="text-[10px] px-2 py-1 rounded-md font-bold" style="background:rgba(99,102,241,.12);color:#6366f1">~14 MB</span>
+                </div>
+                <div class="text-[10px] text-muted font-mono mb-3 truncate opacity-70">best_eye_model.keras</div>
+                <div class="space-y-1.5 text-xs">
+                  <div class="flex items-center gap-2 text-muted"><span style="color:#06b6d4">✓</span> Full-precision weights</div>
+                  <div class="flex items-center gap-2 text-muted"><span style="color:#06b6d4">✓</span> Standard TF format</div>
+                  <div class="flex items-center gap-2 text-muted"><span style="color:#06b6d4">✓</span> Softmax output</div>
+                </div>
+                <!-- Conditions preview -->
+                <div class="mt-4 pt-4 border-t" style="border-color:var(--card-border)">
+                  <div class="text-xs text-muted font-semibold uppercase tracking-wider mb-2">Detectable Conditions (4)</div>
+                  <div class="flex flex-wrap gap-1.5" id="eyeConditionPills"><!-- filled by JS --></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Selected model info banner -->
+          <div id="eyeSelectedModelBanner" class="max-w-3xl mx-auto mt-5 px-5 py-3 rounded-2xl flex items-center gap-3 text-sm" style="background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <span class="text-muted">Selected: </span><span id="eyeSelectedModelName" class="font-semibold" style="color:#06b6d4">eye_efficientnetb2_fp16.tflite</span>
+            <span class="ml-auto text-[10px] px-2 py-0.5 rounded-md font-bold text-white" style="background:linear-gradient(135deg,#06b6d4,#0ea5e9)">READY</span>
           </div>
 
           <div class="flex justify-center mt-8">
@@ -895,6 +1529,7 @@ html[data-theme="light"] body::before{opacity:.5}
         </div>
 
         <!-- ─── PANEL 2: Image Upload ─── -->
+
         <div class="eye-panel" id="eyePanel2">
           <div class="text-center mb-6">
             <div class="text-xs text-muted uppercase tracking-widest font-semibold mb-2">Step 2 of 5</div>
